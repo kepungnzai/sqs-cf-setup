@@ -1,0 +1,47 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Creates SQS Queue with specific User Access'
+
+Parameters:
+  AccountId:
+    Type: String
+    Description: Your 12-digit AWS Account ID
+    Default: '' # <--- CHANGE THIS TO YOUR REAL ID
+  UserName:
+    Type: String
+    Description: IAM User to grant access
+    Default: 'jeremydev'
+
+Resources:
+  MySQSQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: mytestsqs1
+      VisibilityTimeout: 300
+
+  MySQSQueuePolicy:
+    Type: AWS::SQS::QueuePolicy
+    Properties:
+      Queues: 
+        - !Ref MySQSQueue
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: AllowSpecificUser
+            Effect: Allow
+            Principal:
+              AWS: 
+                - !Sub 'arn:aws:iam::${AccountId}:root'
+                - !Sub 'arn:aws:iam::${AccountId}:user/${UserName}'
+            Action: 'sqs:*'
+            Resource: !GetAtt MySQSQueue.Arn
+
+Outputs:
+  QueueURL:
+    Description: The URL of the created SQS Queue
+    Value: !GetAtt MySQSQueue.Url
+  QueueARN:
+    Description: The ARN of the created SQS Queue
+    Value: !GetAtt MySQSQueue.Arn
+  QueueName:
+    Description: The Name of the created SQS Queue
+    Value: !GetAtt MySQSQueue.QueueName
