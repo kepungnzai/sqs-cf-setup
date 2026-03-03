@@ -1,7 +1,6 @@
 
 
 # To create the stack 
-
 aws cloudformation create-stack  --stack-name my-sqs-stack1  --template-body file://sqs.yaml  --region ap-southeast-2
 
 
@@ -12,7 +11,8 @@ dotnet new console -n SqsWriter
 cd SqsWriter
 
 # Add the AWS SDK for SQS
-dotnet add package AWSSDK.SQS --version 3.7.300.74
+dotnet add package AWSSDK.SQS
+dotnet add package AWSSDK.Core
 
-# (Optional) Add AWS configuration package
-dotnet add package AWSSDK.Extensions.NETCore.Setup
+
+
